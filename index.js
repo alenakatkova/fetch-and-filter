@@ -13,13 +13,30 @@ const generateUserInfo = (userId) => {
       <div class="card">
           <h5 class="card-header">${chosenUser.name}</h5>
           <div class="card-body">
-              <p class="card-text">Username: ${chosenUser.username}</p>
-              <p class="card-text">Email: ${chosenUser.email}</p>
-              <p class="card-text">City: ${chosenUser.address.city}</p>
+              <table class="table table-hover table-borderless m-0">
+                  <tbody>
+                      <tr>
+                          <th scope="row">City:</th>
+                          <td>${chosenUser.address.city}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Email:</th>
+                          <td>${chosenUser.email}</td>
+                      </tr>
+
+                      <tr>
+                          <th scope="row">Phone:</th>
+                          <td>${chosenUser.phone}</td>
+                      </tr>
+                      <tr>
+                          <th scope="row">Website:</th>
+                          <td>${chosenUser.website}</td>
+                      </tr>
+                  </tbody>
+              </table>
           </div>
-          <div class="card-footer text-muted">
-               ${chosenUser.company.name}
-          </div>
+          <div class="card-footer text-muted">${chosenUser.company.name}: ${chosenUser.company.catchPhrase}</div>
+        
       </div>
   `
 };
@@ -42,6 +59,7 @@ const showUsersList = (users) => {
         </li>
     `;
   }).join("");
+
 
   const links = document.querySelectorAll("a");
   [...links].forEach(link => {
