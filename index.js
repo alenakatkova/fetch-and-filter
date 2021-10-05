@@ -10,11 +10,17 @@ const generateUserInfo = (userId) => {
   });
 
   return `
-      <p>Name: ${chosenUser.name}</p>
-      <p>Username: ${chosenUser.username}</p>
-      <p>Email: ${chosenUser.email}</p>
-      <p>City: ${chosenUser.address.city}</p>
-      <p>Company: ${chosenUser.company.name}</p>
+      <div class="card">
+          <h5 class="card-header">${chosenUser.name}</h5>
+          <div class="card-body">
+              <p class="card-text">Username: ${chosenUser.username}</p>
+              <p class="card-text">Email: ${chosenUser.email}</p>
+              <p class="card-text">City: ${chosenUser.address.city}</p>
+          </div>
+          <div class="card-footer text-muted">
+               ${chosenUser.company.name}
+          </div>
+      </div>
   `
 };
 
@@ -29,7 +35,12 @@ const onHashChange = () => {
 
 const showUsersList = (users) => {
   usersContainer.innerHTML = users.map(user => {
-    return `<li><a data-id="${user.id}" href="#${'id' + user.id}">${user.name}</a></li>`;
+    return `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a data-id="${user.id}" href="#${'id' + user.id}">${user.name}</a>
+            <span class="badge bg-primary rounded-pill">${user.company.name}</span>
+        </li>
+    `;
   }).join("");
 
   const links = document.querySelectorAll("a");
