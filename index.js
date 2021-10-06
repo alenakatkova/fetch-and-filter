@@ -1,12 +1,12 @@
 const searchInput = document.querySelector(".search-input");
-const usersContainer = document.querySelector(".users-container");
+const usersList = document.querySelector(".users-list");
 const user = document.querySelector(".user");
-usersContainer.textContent = "Loading...";
+
 let fetchedUsers;
 
 const generateUserInfo = (userId) => {
   const chosenUser = [...fetchedUsers].find(user => {
-    return user.id === Number(userId);
+    return user.id === userId;
   });
 
   return `
@@ -36,22 +36,17 @@ const generateUserInfo = (userId) => {
               </table>
           </div>
           <div class="card-footer text-muted">${chosenUser.company.name}: ${chosenUser.company.catchPhrase}</div>
-        
       </div>
   `
 };
 
-const onHashChange = () => {
+const toggleUserInfoChangeWhenOnHashchange = () => {
   const newHash = location.hash;
-  if (newHash.length === 0) {
-    user.innerHTML = "";
-  } else {
-    user.innerHTML = generateUserInfo(newHash.slice(3));
-  }
+  user.innerHTML = newHash.length !== 0 ? generateUserInfo(Number(newHash.slice(3))) : "";
 };
 
 const showUsersList = (users) => {
-  usersContainer.innerHTML = users.map(user => {
+  usersList.innerHTML = users.map(user => {
     return `
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <a data-id="${user.id}" href="#${'id' + user.id}">${user.name}</a>
@@ -59,14 +54,20 @@ const showUsersList = (users) => {
         </li>
     `;
   }).join("");
+};
 
+const cleanUserInfo = () => {
+  history.pushState("", document.title, location.pathname);
+  toggleUserInfoChangeWhenOnHashchange();
+};
 
-  const links = document.querySelectorAll("a");
-  [...links].forEach(link => {
-    link.addEventListener("click", (e) => {
-      user.innerHTML = generateUserInfo(e.target.dataset.id);
-    });
-  })
+const filterUsers = () => {
+  const filteredUsers = [...fetchedUsers]
+      .filter(user => user.name
+          .toLowerCase()
+          .includes(searchInput.value.toLowerCase()));
+  showUsersList(filteredUsers);
+  cleanUserInfo();
 };
 
 fetch("https://jsonplaceholder.typicode.com/users")
@@ -79,14 +80,6 @@ fetch("https://jsonplaceholder.typicode.com/users")
       searchInput.removeAttribute("disabled");
 });
 
-searchInput.addEventListener("input", () => {
-  const filteredUsers = [...fetchedUsers]
-      .filter(user => user.name
-          .toLowerCase()
-          .includes(searchInput.value.toLowerCase()));
-
-  showUsersList(filteredUsers);
-});
-
-window.addEventListener("hashchange", onHashChange);
+searchInput.addEventListener("input", filterUsers);
+window.addEventListener("hashchange", toggleUserInfoChangeWhenOnHashchange);
 
